@@ -9,7 +9,7 @@ app.use(express.json());
 const tasks = [];
 let nextId = 1;
 
-// Reset state between tests
+// Reset state for tests
 function resetTasks() {
   tasks.length = 0;
   nextId = 1;
@@ -49,10 +49,9 @@ app.post('/tasks', (req, res) => {
   return res.status(201).json(task);
 });
 
-// Mark a task as complete
+// Complete a task
 app.patch('/tasks/:id/complete', (req, res) => {
   const id = Number(req.params.id);
-
   const task = tasks.find((item) => item.id === id);
 
   if (!task) {
@@ -69,7 +68,6 @@ app.patch('/tasks/:id/complete', (req, res) => {
 // Delete a task
 app.delete('/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
-
   const index = tasks.findIndex((item) => item.id === id);
 
   if (index === -1) {
@@ -85,6 +83,5 @@ app.delete('/tasks/:id', (req, res) => {
   });
 });
 
-// Export app and test reset helper
 module.exports = app;
 module.exports.resetTasks = resetTasks;
