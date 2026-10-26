@@ -5,7 +5,6 @@ const app = express();
 
 app.use(express.json());
 
-// Store tasks in memory
 const tasks = [];
 let nextId = 1;
 
@@ -35,7 +34,7 @@ app.post('/tasks', (req, res) => {
   const task = {
     id: nextId++,
     title,
-    completed: false,
+    done: false,
   };
 
   tasks.push(task);
@@ -46,7 +45,6 @@ app.post('/tasks', (req, res) => {
 // Mark a task as complete
 app.patch('/tasks/:id/complete', (req, res) => {
   const id = Number(req.params.id);
-
   const task = tasks.find((item) => item.id === id);
 
   if (!task) {
@@ -55,7 +53,7 @@ app.patch('/tasks/:id/complete', (req, res) => {
     });
   }
 
-  task.completed = true;
+  task.done = true;
 
   return res.status(200).json(task);
 });
@@ -63,7 +61,6 @@ app.patch('/tasks/:id/complete', (req, res) => {
 // Delete a task
 app.delete('/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
-
   const index = tasks.findIndex((item) => item.id === id);
 
   if (index === -1) {
