@@ -7,4 +7,7 @@ jobs:
     steps:
       - name: git checkout
         uses: actions/checkout@v4
-      - run: npm test
+      - run: |
+            npm init -y
+            npm install jest
+            npm test
