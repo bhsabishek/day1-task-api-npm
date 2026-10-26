@@ -1,38 +1,82 @@
+
 const express = require('express');
-const morgan = require('morgan');
-const { isValidTitle } = require('./utils/validate');
-const store = require('./store');
 
 const app = express();
+
 app.use(express.json());
 
-if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('combined'));
-}
+// Store tasks in memory
+const tasks = [];
+let nextId = 1;
 
+// Health check
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+// Get all tasks
 app.get('/tasks', (req, res) => {
-  res.json(store.all());
+  res.status(200).json(tasks);
 });
 
+// Create a task
 app.post('/tasks', (req, res) => {
-  const { title } = req.body || {};
-  if (!isValidTitle(title)) {
-    return res.status(400).json({ error: 'title is required (1-100 characters)' });
+  const title =
+    typeof req.body?.title === 'string'
+      ? req.body.title.trim()
+      : '';
+
+  if (!title) {
+    return res.status(400).json({
+      error: 'Title is required',
+    });
   }
-  res.status(201).json(store.add(title.trim()));
+
+  const task = {
+    id: nextId++,
+    title,
+    completed: false,
+  };
+
+  tasks.push(task);
+
+  return res.status(201).json(task);
 });
 
+// Mark a task as complete
 app.patch('/tasks/:id/complete', (req, res) => {
-  const task = store.complete(Number(req.params.id));
-  res.json(task);
+  const id = Number(req.params.id);
+
+  const task = tasks.find((item) => item.id === id);
+
+  if (!task) {
+    return res.status(404).json({
+      error: 'Task not found',
+    });
+  }
+
+  task.completed = true;
+
+  return res.status(200).json(task);
 });
 
+// Delete a task
 app.delete('/tasks/:id', (req, res) => {
-  const removed = store.remove(Number(req.params.id));
-  if (!removed) {
-    return res.status(404).json({ error: 'task not found' });
+  const id = Number(req.params.id);
+
+  const index = tasks.findIndex((item) => item.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({
+      error: 'Task not found',
+    });
   }
-  res.status(204).end();
+
+  tasks.splice(index, 1);
+
+  return res.status(200).json({
+    message: 'Task deleted successfully',
+  });
 });
 
 module.exports = app;
