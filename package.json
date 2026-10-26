@@ -24,5 +24,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhsabishek/day1-task-api-npm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bhsabishek/day1-task-api-npm/issues"
+  },
+  "homepage": "https://github.com/bhsabishek/day1-task-api-npm#readme"
 }
