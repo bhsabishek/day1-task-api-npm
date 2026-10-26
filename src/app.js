@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const { isValidTitle } = require('./Utils/validate');
+const { isValidTitle } = require('./utils/validate');
 const store = require('./store');
 
 const app = express();
